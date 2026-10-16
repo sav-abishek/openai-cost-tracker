@@ -218,3 +218,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# OpenAI Cost Tracker generated and private files
+node_modules/
+*.vsix
+artifacts/
+.test-host/
+.tools/
+local-data/
+.env
+.env.*
+!.env.example
+*.log
+
+/BRIEF.md
