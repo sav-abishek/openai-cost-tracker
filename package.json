@@ -1,0 +1,157 @@
+{
+  "name": "ai-cost-ledger",
+  "displayName": "OpenAI Cost Tracker — USD & INR",
+  "description": "Global OpenAI cost tracking across projects and apps, with daily/monthly USD and INR accounting.",
+  "version": "0.2.0",
+  "publisher": "abishek-local",
+  "license": "MPL-2.0",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./src/extension.js",
+  "extensionKind": [
+    "ui"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": true
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "node scripts/package.js",
+    "verify:ui": "node scripts/verify-ui.js"
+  },
+  "devDependencies": {
+    "jsonc-parser": "3.3.1",
+    "playwright": "1.62.1"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aiCostLedger",
+          "title": "AI Costs",
+          "icon": "media/ledger.svg"
+        }
+      ]
+    },
+    "views": {
+      "aiCostLedger": [
+        {
+          "id": "aiCostLedger.summary",
+          "name": "Global usage"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aiCostLedger.open",
+        "title": "OpenAI Cost Tracker: Open Dashboard"
+      },
+      {
+        "command": "aiCostLedger.selectMonth",
+        "title": "OpenAI Cost Tracker: Choose Month"
+      },
+      {
+        "command": "aiCostLedger.refresh",
+        "title": "OpenAI Cost Tracker: Refresh Usage and Billing"
+      },
+      {
+        "command": "aiCostLedger.connect",
+        "title": "OpenAI Cost Tracker: Connect OpenAI Billing (Admin Key)"
+      },
+      {
+        "command": "aiCostLedger.disconnect",
+        "title": "OpenAI Cost Tracker: Disconnect OpenAI Billing"
+      },
+      {
+        "command": "aiCostLedger.export",
+        "title": "OpenAI Cost Tracker: Export Accounting JSON"
+      },
+      {
+        "command": "aiCostLedger.fx",
+        "title": "OpenAI Cost Tracker: Update USD to INR Reference Rate"
+      }
+    ],
+    "configuration": {
+      "title": "OpenAI Cost Tracker",
+      "properties": {
+        "aiCostLedger.dataDirectory": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Shared private usage and billing cache directory. Empty uses ~/.ai-cost-ledger. Keep it out of Git. Reload all VS Code windows after changing it."
+        },
+        "aiCostLedger.codexHome": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Codex data directory. Empty uses CODEX_HOME or ~/.codex. Local host only; remote hosts require their own log copy."
+        },
+        "aiCostLedger.assumedTier": {
+          "type": "string",
+          "enum": [
+            "standard",
+            "fast",
+            "ultrafast",
+            "flex",
+            "unknown"
+          ],
+          "default": "standard",
+          "scope": "application",
+          "description": "Explicit estimation assumption when a log omits processing tier. Choose unknown to leave such usage unpriced. Does not affect reported billing."
+        },
+        "aiCostLedger.usdInr": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0,
+          "scope": "application",
+          "description": "Optional manual INR per USD. Zero uses the dated reference rate. Conversion is not an actual bank charge."
+        },
+        "aiCostLedger.billingProjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "scope": "application",
+          "description": "Restrict reported billing to these OpenAI project IDs. Empty includes the whole organization; this may include other apps or people."
+        },
+        "aiCostLedger.organizationId": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Optional OpenAI organization ID for the stored Admin key."
+        },
+        "aiCostLedger.billingRefreshMinutes": {
+          "type": "number",
+          "default": 15,
+          "minimum": 5,
+          "maximum": 1440,
+          "scope": "application",
+          "description": "Refresh interval for OpenAI Costs. Only active after connecting an Admin key."
+        },
+        "aiCostLedger.rateOverrides": {
+          "type": "array",
+          "default": [],
+          "scope": "application",
+          "description": "Versioned custom rate cards. See README for required model, dates, context threshold, tier and per-million USD rates."
+        }
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sav-abishek/openai-cost-tracker.git"
+  }
+}
